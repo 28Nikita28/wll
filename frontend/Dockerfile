@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install --silent
 
 COPY . .
-RUN npm run build
+RUN npm run build -- --sourcemap false
 
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
