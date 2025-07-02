@@ -1,0 +1,422 @@
+:root {
+  --dsr-main: #4d6bfe;
+  --dsr-main-2: rgba(77, 107, 254, .4);
+  --dsr-main-3: rgba(77, 107, 254, .2);
+  --dsr-bg: #292a2d;
+  --dsr-text-0: rgb(255, 255, 255);
+  --dsr-text-1: rgb(200, 200, 200);
+  --dsr-border-1: rgb(70, 70, 70);
+  --dsr-input-border: #5a5a69;
+  --dsr-input-bg: #404045;
+  --dsr-button-main-bg: #509fff;
+  --dsr-button-main-bg-hover: #4166d5;
+}
+
+.message-input-container {
+  position: relative;
+  background-color: rgba(41, 42, 45, 0.8);
+  border-radius: 1.5rem;
+  border: 1px solid var(--dsr-border-1);
+  max-width: var(--message-list-max-width, 800px);
+  width: 100%;
+  box-shadow: 0 9px 9px 0px rgba(0,0,0,0.01), 0 2px 5px 0px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+  max-height: 200px;
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+}
+
+.message-input-container.expanded {
+  max-height: 80vh;
+}
+
+@media (max-width: 768px) {
+  .message-input-container.expanded {
+    max-height: 60vh;
+  }
+}
+
+.message-input-container:hover {
+  border-color: var(--dsr-main-2);
+  box-shadow: 0 0 0 2px var(--dsr-main-3);
+}
+
+.message-input {
+  width: 100%;
+  height: 100%;
+  padding: 12px 48px 12px 12px;
+  border-radius: 1.5rem;
+  border: none;
+  background-color: transparent;
+  color: var(--dsr-text-0);
+  font-size: 14px;
+  resize: none;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: hidden;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: all 150ms ease-in-out;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  outline: none;
+}
+
+.message-input:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.message-buttons {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.message-input::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.message-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--dsr-button-main-bg);
+  color: var(--dsr-text-0);
+  cursor: pointer;
+  transition: all 0.2s var(--ds-ease-in-out);
+  width: 32px;
+  height: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.send-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.send-button:hover {
+  background-color: var(--dsr-button-main-bg-hover);
+  transform: scale(1.1);
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.send-button:active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 10.01%);
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0s;
+}
+
+.file-upload-button {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: var(--dsr-main-2);
+  transition: all 0.2s var(--ds-ease-in-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-upload-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 10.01%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+}
+
+.file-upload-button:hover {
+  background-color: var(--dsr-main);
+  transform: scale(1.1);
+}
+
+.file-upload-button:active::after {
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0s;
+}
+
+/* MessageInputContainer.css */
+.message-input-container {
+  position: relative;
+  background-color: rgba(var(--composer-surface-primary), 0.8);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(var(--border-primary), 0.4);
+  max-width: var(--message-list-max-width, 800px);
+  width: 100%;
+  box-shadow: var(--shadow-composer);
+  transition: all 0.3s var(--spring-common);
+  max-height: 200px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.message-input-container.expanded {
+  max-height: 80vh;
+}
+
+@media (max-width: 768px) {
+  .message-input-container.expanded {
+    max-height: 60vh;
+  }
+}
+
+.message-input-container:hover {
+  border-color: rgba(var(--accent-color), 0.6);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color), 0.2);
+}
+
+.message-input-container:focus-within {
+  border-color: rgb(var(--accent-color));
+  box-shadow: 0 0 0 3px rgba(var(--accent-color), 0.3);
+}
+
+.message-input {
+  width: 100%;
+  height: 100%;
+  padding: 12px 48px 12px 12px;
+  border-radius: 1.5rem;
+  border: none;
+  background-color: transparent;
+  color: rgb(var(--text-primary));
+  font-size: 14px;
+  resize: none;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: hidden;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: all 150ms var(--spring-common);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  outline: none;
+}
+
+.message-input:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.message-input::placeholder {
+  color: rgba(var(--text-tertiary), 0.7);
+  transition: opacity 0.3s ease;
+}
+
+.message-input:focus::placeholder {
+  opacity: 0.5;
+}
+
+.message-buttons {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.message-input::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(var(--accent-color), 0.9);
+  color: rgb(var(--text-inverse));
+  cursor: pointer;
+  transition: all 0.2s var(--spring-common);
+  width: 32px;
+  height: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.send-button svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s;
+}
+
+.send-button:hover {
+  background: rgba(var(--accent-color), 1);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.send-button:hover svg {
+  transform: translateX(1px);
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.send-button:active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 10.01%);
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0s;
+}
+
+.file-upload-button {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  background: rgba(var(--accent-color), 0.2);
+  transition: all 0.2s var(--spring-common);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  color: rgb(var(--text-primary));
+}
+
+.file-upload-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 10.01%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+}
+
+.file-upload-button:hover {
+  background: rgba(var(--accent-color), 0.3);
+  transform: scale(1.1);
+}
+
+.file-upload-button:active::after {
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0s;
+}
+
+/* Анимация для активного состояния */
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(var(--accent-color), 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(var(--accent-color), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--accent-color), 0); }
+}
+
+.message-input-container.recording {
+  animation: pulse-border 1.5s infinite;
+  border-color: rgba(var(--accent-color), 0.8);
+}
+
+/* Микро-взаимодействия для кнопок */
+.send-button .send-icon {
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.send-button:hover .send-icon {
+  transform: translateX(2px) rotate(5deg);
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 480px) {
+  .message-input {
+    padding: 10px 40px 10px 10px;
+    font-size: 13px;
+  }
+  
+  .message-buttons {
+    right: 4px;
+    bottom: 4px;
+  }
+  
+  .send-button, 
+  .file-upload-button {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .send-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Темы */
+.app.light-theme .message-input-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.app.dark-theme .message-input-container {
+  background: rgba(30, 30, 30, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.app.sepia-theme .message-input-container {
+  background: rgba(245, 237, 220, 0.9);
+  border-color: rgba(200, 192, 160, 0.3);
+}
+
+.app.light-theme .file-upload-button {
+  background: rgba(77, 107, 254, 0.1);
+}
+
+.app.dark-theme .file-upload-button {
+  background: rgba(77, 107, 254, 0.2);
+}
+
+.app.sepia-theme .file-upload-button {
+  background: rgba(180, 160, 120, 0.2);
+}
+
+/* Анимация при фокусе */
+@keyframes input-focus-glow {
+  0% { box-shadow: 0 0 0 0 rgba(var(--accent-color), 0.3); }
+  100% { box-shadow: 0 0 0 4px rgba(var(--accent-color), 0); }
+}
+
+.message-input:focus {
+  animation: input-focus-glow 0.6s ease-out;
+}

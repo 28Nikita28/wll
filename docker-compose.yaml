@@ -1,0 +1,48 @@
+services:
+  nginx-proxy:
+    build: 
+      context: ./nginx
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    networks:
+      - ai-network
+    depends_on:
+      - backend
+      - frontend
+
+  backend:
+    build: 
+      context: ./backend
+    container_name: ai-backend
+    environment:
+      - PORT=8000
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - TOGETHER_API_KEY=${TOGETHER_API_KEY}
+    networks:
+      - ai-network
+    expose:
+      - "8000"
+
+  frontend:
+    build: 
+      context: ./frontend
+    container_name: ai-frontend
+    networks:
+      - ai-network
+
+  telegram:
+    build: 
+      context: ./telegram
+    container_name: ai-telegram
+    environment:
+      - TG_TOKEN=${TG_TOKEN}
+      - BACKEND_URL=http://backend:8000/chat/telegram
+    networks:
+      - ai-network
+    depends_on:
+      - backend
+
+networks:
+  ai-network:
+    driver: bridge

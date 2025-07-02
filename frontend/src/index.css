@@ -1,0 +1,415 @@
+/* App.css */
+:root {
+  /* Основные переменные из примера */
+  --sidebar-width: 280px;
+  --sidebar-bg: var(--bg-primary);
+  --message-ai-bg: var(--bg-primary);
+  --message-user-bg: var(--bg-active);
+  --input-bg: var(--bg-quaternary);
+  --border-color: var(--border-default);
+  --accent-color: var(--interactive-bg-accent-default);
+  
+  /* Переменные цветов из примера */
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
+  --text-tertiary: var(--text-tertiary);
+  --text-inverse: var(--text-inverted-static);
+  --text-destructive: var(--text-status-error);
+  --bg-primary: var(--bg-primary);
+  --bg-secondary: var(--bg-secondary);
+  --bg-tertiary: var(--bg-tertiary);
+  --bg-quaternary: var(--bg-tertiary);
+  --bg-inverse: var(--bg-inverted);
+  --bg-light: var(--surface-hover);
+  --bg-active: var(--interactive-bg-secondary-hover);
+  --bg-error: var(--surface-error);
+  --border-primary: var(--border-default);
+  --border-active: var(--border-heavy);
+  --focus-outline: 0 0 0;
+  --bg-popover: var(--bg-elevated-primary);
+  --shadow-popover: var(--shadow-lg);
+  --shadow-composer: var(--shadow-md);
+  --shadow-inset-stroke: inset 0 0 0 1px var(--border-light);
+  --shadow-inset-stroke-inverse: inset 0 0 0 1px var(--text-inverted);
+  --bg-composer: var(--composer-surface-primary);
+  --bg-composer-button: var(--interactive-bg-secondary-default);
+  
+  /* Тени и эффекты */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
+  
+  /* Размеры */
+  --header-height: 60px;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  
+  /* Плавные переходы */
+  transition: background-color 0.3s var(--spring-common), 
+              color 0.3s var(--spring-common),
+              border-color 0.3s var(--spring-common);
+}
+
+.dark {
+  /* Обновленные переменные для темной темы */
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
+  --text-tertiary: var(--text-tertiary);
+  --text-inverse: var(--text-inverted);
+  --bg-primary: var(--bg-primary);
+  --bg-secondary: var(--bg-secondary);
+  --bg-tertiary: var(--bg-tertiary);
+  --bg-quaternary: var(--bg-quaternary);
+  --bg-inverse: var(--bg-inverted);
+  --bg-light: var(--surface-hover);
+  --bg-active: var(--interactive-bg-secondary-hover);
+  --border-primary: var(--border-default);
+  --border-active: var(--border-heavy);
+  --focus-outline: var(--text-inverted);
+  --bg-popover: var(--bg-elevated-primary);
+  --shadow-popover: var(--shadow-lg-dark);
+  --shadow-inset-stroke: inset 0 0 0 1px var(--border-light);
+  --shadow-inset-stroke-inverse: inset 0 0 0 1px var(--text-inverted);
+  --bg-composer: var(--composer-surface-primary);
+  --bg-composer-button: var(--interactive-bg-secondary-default);
+  --shadow-composer: 0 12px 48px rgba(0, 0, 0, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  background: var(--bg-primary);
+  position: relative;
+  transition: background-color 0.3s var(--spring-common), 
+              color 0.3s var(--spring-common);
+}
+
+/* Общие стили компонентов */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border-primary);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  transition: all 0.4s var(--spring-common);
+  box-shadow: var(--shadow-md);
+  border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 1rem;
+  height: calc(100vh - var(--header-height));
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
+.message-bubble {
+  max-width: min(85%, 800px);
+  width: fit-content;
+  padding: 1.25rem 1.5rem;
+  line-height: 1.6;
+  font-size: 16px;
+  border-radius: var(--border-radius-lg);
+  background: var(--message-ai-bg);
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s var(--spring-common);
+}
+
+.message.user .message-bubble {
+  background: var(--message-user-bg);
+  border-color: var(--border-active);
+}
+
+.input-container {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--bg-composer);
+  border-top: 1px solid var(--border-primary);
+}
+
+.input-container textarea {
+  flex: 1;
+  border-radius: var(--border-radius-lg);
+  padding: 0.75rem 1rem;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  resize: none;
+  min-height: 48px;
+  max-height: 200px;
+  transition: all 0.3s var(--spring-common);
+}
+
+/* Анимации */
+@keyframes messageAppear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.message {
+  animation: messageAppear 0.3s var(--spring-common) forwards;
+}
+
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 85%;
+    max-width: 300px;
+    transition: transform 0.3s var(--spring-common);
+  }
+  
+  .sidebar.hidden {
+    transform: translateX(-100%);
+  }
+  
+  .message-bubble {
+    max-width: 95%;
+    padding: 1rem;
+  }
+  
+  .chat-container {
+    padding: 0.5rem;
+  }
+}
+
+/* Стили для кнопок */
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  background: var(--interactive-bg-secondary-default);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  cursor: pointer;
+  transition: all 0.2s var(--spring-common);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:hover {
+  background: var(--interactive-bg-secondary-hover);
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button.primary {
+  background: var(--accent-color);
+  color: var(--text-inverse);
+  border-color: transparent;
+}
+
+/* Стили для пользовательского интерфейса */
+.user-info {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-color);
+}
+
+.user-details {
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Стили для кодовых блоков */
+.code-block-wrapper {
+  position: relative;
+  margin: 1rem 0;
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-primary);
+  overflow-x: auto;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+/* Стили для сессий */
+.session-item {
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  background: var(--bg-secondary);
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s var(--spring-common);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.session-item:hover {
+  background: var(--bg-active);
+  transform: translateX(4px);
+}
+
+.session-item.active {
+  background: var(--accent-color);
+  color: var(--text-inverse);
+}
+
+/* Анимация печатания */
+.typing-animation {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Меню пользователя */
+.user-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  width: 220px;
+  z-index: 100;
+}
+
+.menu-item {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.2s var(--spring-common);
+}
+
+.menu-item:hover {
+  background: var(--bg-active);
+}
+
+/* Стили для тем */
+.theme-selector {
+  position: relative;
+  margin: 1rem 0;
+}
+
+.theme-option {
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.2s var(--spring-common);
+}
+
+.theme-option:hover {
+  background: var(--bg-active);
+}
+
+/* Стили для мобильной навигации */
+.panel-toggle {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 1001;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s var(--spring-common);
+}
+
+@media (max-width: 768px) {
+  .main-content::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-scrim);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--spring-common);
+  }
+  
+  .main-content.sidebar-open::after {
+    opacity: 1;
+    pointer-events: all;
+  }
+}

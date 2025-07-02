@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+Dockerfile
+docker-compose.yaml
+node_modules
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+build
