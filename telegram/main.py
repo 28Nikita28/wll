@@ -4,12 +4,13 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.client.default import DefaultBotProperties
-from aiogram.utils.markdown import hcode, hbold
+from aiogram.utils.markdown import hbold
 from dotenv import load_dotenv
 import asyncio
 import logging
 import os
 import aiohttp
+import html
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,8 +30,6 @@ class UserState(StatesGroup):
     selected_model = State()
 
 MODELS = {
-    "gpt-4.1-mini": "🚀 gpt-4.1-mini",
-    "gpt-4o-mini": "🚀 gpt-4o-mini",
     "deepseek": "🧠 DeepSeek 0324",
     "deepseek-r1": "🚀 DeepSeek R1",
     "deepseek-v3": "💎 DeepSeek v3",
@@ -42,6 +41,8 @@ MODELS = {
     "llama-4-scout": "🦙 Llama Scout",
     "deepseek-r1-free": "🚀 DeepSeek R1 Free"
 }
+
+DEFAULT_MODEL = "deepseek-r1-free"
 
 async def generate(prompt: str, url: str, model: str) -> str:
     async with aiohttp.ClientSession() as session:
@@ -56,32 +57,27 @@ async def generate(prompt: str, url: str, model: str) -> str:
                 data = await resp.json()
                 return data.get("content", "")
         except Exception as e:
-            print(f"[generate error] {e}")
+            logger.error(f"[generate error] {e}")
             return ""
 
 def get_model_keyboard(selected: str = None) -> types.InlineKeyboardMarkup:
     buttons = []
-
     for key, name in MODELS.items():
-        status_icon = "🟢" if key == selected else "⚪"
+        status_icon = "✅" if key == selected else "⚪"
         buttons.append([
             types.InlineKeyboardButton(
                 text=f"{status_icon} {name}",
                 callback_data=f"model_{key}"
             )
         ])
-
+    
     buttons.append([
-        types.InlineKeyboardButton(
-            text="🧩 Выбрать модель",
-            callback_data="open_model_menu"
-        ),
         types.InlineKeyboardButton(
             text="🌍 Web App",
             web_app=types.WebAppInfo(url="https://w5model.netlify.app/")
         )
     ])
-
+    
     return types.InlineKeyboardMarkup(inline_keyboard=buttons)
 
 def get_reply_keyboard() -> types.ReplyKeyboardMarkup:
@@ -94,22 +90,37 @@ def get_reply_keyboard() -> types.ReplyKeyboardMarkup:
         input_field_placeholder="Введите сообщение для ИИ..."
     )
 
+def get_response_keyboard() -> types.InlineKeyboardMarkup:
+    return types.InlineKeyboardMarkup(inline_keyboard=[
+        [
+            types.InlineKeyboardButton(
+                text="🧩 Сменить модель",
+                callback_data="open_model_menu"
+            )
+        ]
+    ])
+
+def format_response(model_name: str, response: str) -> str:
+    return (
+        f"🧠 {hbold(model_name)}\n\n"
+        f"💬 {html.escape(response)}"
+    )
+
 @dp.message(CommandStart())
 async def cmd_start(message: types.Message, state: FSMContext):
     await state.clear()
-    await state.set_data({"selected_model": "gpt-4o-mini"})
+    await state.set_data({"selected_model": DEFAULT_MODEL})
     await message.answer(
         f"{hbold('🤖 AI Assistant Bot')}\n\n"
         "Выберите модель ИИ или используйте веб-приложение:\n"
-        "По умолчанию: 🚀 deepseek-r1-free",
+        f"По умолчанию: {MODELS[DEFAULT_MODEL]}",
         reply_markup=get_reply_keyboard()  
     )
 
 @dp.callback_query(lambda c: c.data == "open_model_menu")
 async def open_model_menu(callback: types.CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
-    selected = user_data.get("selected_model", "gpt-4o-mini")
-
+    selected = user_data.get("selected_model", DEFAULT_MODEL)
     await callback.message.answer(
         "🔧 Выберите модель ИИ:",
         reply_markup=get_model_keyboard(selected)
@@ -138,12 +149,12 @@ async def model_selected(callback: types.CallbackQuery, state: FSMContext):
 async def handle_message(message: types.Message, state: FSMContext):
     if message.text == "🧩 Выбрать модель":
         user_data = await state.get_data()
-        selected = user_data.get("selected_model", "gpt-4o-mini")
+        selected = user_data.get("selected_model", DEFAULT_MODEL)
         await message.answer("🔧 Выберите модель:", reply_markup=get_model_keyboard(selected))
         return
 
     user_data = await state.get_data()
-    model = user_data.get("selected_model", "gpt-4o-mini")
+    model = user_data.get("selected_model", DEFAULT_MODEL)
 
     await message.bot.send_chat_action(message.chat.id, "typing")
     processing_msg = await message.answer("⏳ Обработка запроса...")
@@ -155,10 +166,11 @@ async def handle_message(message: types.Message, state: FSMContext):
         if not response:
             raise ValueError("Пустой ответ от модели")
 
-        formatted = response.replace("```", "'''")
-        text = f"{hbold(MODELS[model])} ответил:\n{hcode(formatted)}"
-
-        await message.answer(text, reply_markup=get_model_keyboard(model))
+        formatted_response = format_response(MODELS[model], response)
+        await message.answer(
+            formatted_response,
+            reply_markup=get_response_keyboard()
+        )
 
     except asyncio.TimeoutError:
         await message.answer("⌛ Превышено время ожидания")
